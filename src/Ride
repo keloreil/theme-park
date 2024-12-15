@@ -24,12 +24,11 @@ public class Ride implements RideInterface {
     }
 
     @Override
-    public void removeVisitorFromQueue() {
-        Visitor visitor = waitingLine.poll();
-        if (visitor != null) {
+    public void removeVisitorFromQueue(Visitor visitor) {
+        if (waitingLine.remove(visitor)) {
             System.out.println("Visitor removed from waiting line: " + visitor.getName());
         } else {
-            System.out.println("Waiting line is empty.");
+            System.out.println("Visitor not found in waiting line.");
         }
     }
 
@@ -85,13 +84,18 @@ public class Ride implements RideInterface {
         }
     }
 
+    public void sortRideHistory() {
+        Collections.sort(rideHistory, new VisitorComparator());
+        System.out.println("Ride history sorted.");
+    }
+
     public void exportRideHistory() {
-        try (PrintWriter writer = new PrintWriter(new File("ride_history.csv"))) {
+        try (PrintWriter writer = new PrintWriter(new FileWriter("ride_history.csv"))) {
             for (Visitor visitor : rideHistory) {
                 writer.println(visitor.getName() + "," + visitor.getAge() + "," + visitor.getId());
             }
             System.out.println("Ride history exported to ride_history.csv");
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Error exporting ride history: " + e.getMessage());
         }
     }
@@ -100,16 +104,16 @@ public class Ride implements RideInterface {
         try (Scanner scanner = new Scanner(new File("ride_history.csv"))) {
             while (scanner.hasNextLine()) {
                 String[] parts = scanner.nextLine().split(",");
-                Visitor visitor = new Visitor(parts[0], Integer.parseInt(parts[1]), parts[2], "Standard", false);
-                rideHistory.add(visitor);
+                if (parts.length == 3) {
+                    Visitor visitor = new Visitor(parts[0], Integer.parseInt(parts[1]), parts[2], "Standard", false);
+                    rideHistory.add(visitor);
+                } else {
+                    System.out.println("Invalid data format in line: " + String.join(",", parts));
+                }
             }
             System.out.println("Ride history imported from ride_history.csv");
         } catch (FileNotFoundException e) {
             System.out.println("Error importing ride history: " + e.getMessage());
         }
-    }
-
-    public LinkedList<Visitor> getRideHistory() {
-        return rideHistory;
     }
 }
