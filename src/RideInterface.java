@@ -2,7 +2,7 @@ package src;
 
 public interface RideInterface {
     void addVisitorToQueue(Visitor visitor);
-    void removeVisitorFromQueue();
+    void removeVisitorFromQueue(Visitor visitor);
     void printQueue();
     void runOneCycle();
     void addVisitorToHistory(Visitor visitor);
