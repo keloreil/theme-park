@@ -1,30 +1,14 @@
-package src;
+ppackage src;
 
-public class Visitor extends Person {
-    private String ticketType;
-    private boolean hasFastPass;
+import java.util.Comparator;
 
-    public Visitor() {}
-
-    public Visitor(String name, int age, String id, String ticketType, boolean hasFastPass) {
-        super(name, age, id);
-        this.ticketType = ticketType;
-        this.hasFastPass = hasFastPass;
-    }
-
-    public String getTicketType() {
-        return ticketType;
-    }
-
-    public void setTicketType(String ticketType) {
-        this.ticketType = ticketType;
-    }
-
-    public boolean isHasFastPass() {
-        return hasFastPass;
-    }
-
-    public void setHasFastPass(boolean hasFastPass) {
-        this.hasFastPass = hasFastPass;
+public class VisitorComparator implements Comparator<Visitor> {
+    @Override
+    public int compare(Visitor v1, Visitor v2) {
+        int ageCompare = Integer.compare(v1.getAge(), v2.getAge());
+        if (ageCompare != 0) {
+            return ageCompare;
+        }
+        return v1.getName().compareTo(v2.getName());
     }
 }
